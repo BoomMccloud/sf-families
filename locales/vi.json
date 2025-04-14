@@ -1,0 +1,15 @@
+{
+  "translation": {
+    "welcome": "Chào mừng!",
+    "greeting": "Xin chào, {{name}}",
+    "onboarding": {
+        "title": "Chọn ngôn ngữ của bạn",
+        "subtitle": "Chọn ngôn ngữ ưa thích của bạn ở bên dưới.",
+        "continue": "Tiếp tục"
+    },
+    "tabs": {
+         "home": "Trang chủ",
+         "settings": "Cài đặt"
+    }
+  }
+}

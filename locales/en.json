@@ -1,0 +1,15 @@
+{
+  "translation": {
+    "welcome": "Welcome!",
+    "greeting": "Hello, {{name}}",
+    "onboarding": {
+        "title": "Choose Your Language",
+        "subtitle": "Select your preferred language below.",
+        "continue": "Continue"
+    },
+    "tabs": {
+         "home": "Home",
+         "settings": "Settings"
+    }
+  }
+}

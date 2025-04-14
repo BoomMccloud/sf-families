@@ -1,0 +1,15 @@
+{
+  "translation": {
+    "welcome": "欢迎！",
+    "greeting": "你好, {{name}}",
+     "onboarding": {
+        "title": "选择你的语言",
+        "subtitle": "请在下方选择你的首选语言。",
+        "continue": "继续"
+    },
+    "tabs": {
+        "home": "首页",
+        "settings": "设置"
+    }
+  }
+}

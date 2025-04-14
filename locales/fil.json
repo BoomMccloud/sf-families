@@ -1,0 +1,15 @@
+{
+  "translation": {
+    "welcome": "Maligayang pagdating!",
+    "greeting": "Kumusta, {{name}}",
+    "onboarding": {
+        "title": "Piliin ang Iyong Wika",
+        "subtitle": "Piliin ang iyong gustong wika sa ibaba.",
+        "continue": "Magpatuloy"
+    },
+    "tabs": {
+         "home": "Home",
+         "settings": "Mga Setting"
+    }
+  }
+}
