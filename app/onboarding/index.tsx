@@ -31,9 +31,11 @@ export default function OnboardingScreen() {
         // Detect system language to *pre-select* the most likely choice
         // This makes the UI match the potential system language initially
         const locales = Localization.getLocales();
-        const systemLanguageCode = locales[0]?.languageCode;
-        const systemRegionCode = locales[0]?.regionCode;
-        const systemScriptCode = locales[0]?.scriptCode;
+        const locale = locales[0]; // Get the first locale object
+        const systemLanguageCode = locale?.languageCode;
+        const systemRegionCode = locale?.regionCode;
+        // Safely access scriptCode, checking if the property exists and is a string
+        const systemScriptCode = locale && 'scriptCode' in locale && typeof locale.scriptCode === 'string' ? locale.scriptCode : undefined;
 
         let defaultLangCode: string | null = null;
         if (systemLanguageCode === 'zh') {

@@ -29,20 +29,20 @@ export default function RootLayout() {
   // Effect for checking onboarding status
   useEffect(() => {
     async function checkStorage() {
-      let onboardingComplete = false;
+      let onboardingComplete = false; // Default assumption
       try {
         const value = await AsyncStorage.getItem(ONBOARDING_COMPLETED_KEY);
+        console.log(`AsyncStorage Check: Key='${ONBOARDING_COMPLETED_KEY}', Raw Value='${value}'`); // Keep logging
         onboardingComplete = value === 'true';
-        console.log('Onboarding status from storage:', value);
+        console.log(`AsyncStorage Check: Parsed onboardingComplete=${onboardingComplete}`); // Keep logging
       } catch (e) {
         console.error('Failed to load onboarding status:', e);
-        // Keep false on error
+        onboardingComplete = false;
       } finally {
         setIsOnboardingComplete(onboardingComplete);
         console.log('Onboarding state set to:', onboardingComplete);
       }
     }
-
     checkStorage();
   }, []);
 
@@ -90,27 +90,21 @@ export default function RootLayout() {
 
 
   const onLayoutRootView = useCallback(async () => {
-    // Now wait for fonts, onboarding status, AND i18n
     if (fontsLoaded && isOnboardingComplete !== null && isI18nReady) {
-      console.log('Fonts loaded, onboarding status checked, and i18n ready. App is ready.');
+      console.log('Layout Ready: Fonts, Onboarding Status, i18n');
+      console.log(`Layout Check: isOnboardingComplete = ${isOnboardingComplete}`); // Keep logging
 
       await SplashScreen.hideAsync();
       console.log('Splash screen hidden.');
 
-      // Navigation logic remains the same
       if (isOnboardingComplete === false) {
-        console.log('Redirecting to /onboarding...');
-        // Use replace to prevent going back to the loading state
-        router.replace('/onboarding' as Href);
+        console.log('Redirect Condition Met: isOnboardingComplete is false. Redirecting...');
+        router.replace('/onboarding'); // Redirect is correct
       } else {
-        console.log('Onboarding already complete, initial route will be used.');
-        // No action needed, Stack navigator's initialRouteName handles this
+        console.log('Redirect Condition Not Met: isOnboardingComplete is true. Staying on current/initial route.');
       }
     } else {
-      // Optional: Log which part is not ready for debugging
-       if (!fontsLoaded) console.log('Layout callback called, but fonts not loaded yet.');
-       if (isOnboardingComplete === null) console.log('Layout callback called, but onboarding status not checked yet.');
-       if (!isI18nReady) console.log('Layout callback called, but i18n not ready yet.');
+       console.log(`Layout Not Ready: Fonts=${fontsLoaded}, OnboardingChecked=${isOnboardingComplete !== null}, i18n=${isI18nReady}`); // Keep logging
     }
   }, [fontsLoaded, isOnboardingComplete, isI18nReady, router]);
 
@@ -125,9 +119,10 @@ export default function RootLayout() {
     // react-i18next's initReactI18next handles the provider context implicitly
     <View style={styles.rootContainer} onLayout={onLayoutRootView}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack initialRouteName='(tabs)'>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="onboarding" />
+          <Stack.Screen name="test" />
           <Stack.Screen name="+not-found" />
         </Stack>
         <StatusBar style="auto" />

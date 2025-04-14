@@ -2,6 +2,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Localization from 'expo-localization';
+import { Platform } from 'react-native';
 
 // Import all your translation files
 import en from '../locales/en.json';
@@ -13,13 +14,13 @@ import vi from '../locales/vi.json';
 import ru from '../locales/ru.json';
 
 const LANGUAGES = {
-    en,
-    es,
-    'zh-CN': zhCN,
-    'zh-TW': zhTW,
-    fil,
-    vi,
-    ru,
+    en: require('../locales/en.json'),
+    es: require('../locales/es.json'),
+    'zh-CN': require('../locales/zh-CN.json'),
+    'zh-TW': require('../locales/zh-TW.json'),
+    fil: require('../locales/fil.json'),
+    vi: require('../locales/vi.json'),
+    ru: require('../locales/ru.json'),
 };
 
 const SUPPORTED_LANG_CODES = Object.keys(LANGUAGES);
@@ -29,6 +30,11 @@ const languageDetector = {
   type: 'languageDetector' as const, // Use 'as const' for proper type inference
   async: true, // Indicates detection is asynchronous
   detect: async (callback: (lang: string) => void) => {
+    if (Platform.OS === 'web' && typeof window === 'undefined') {
+        console.log('i18n: Skipping language detection on server.');
+        return callback('en');
+    }
+
     try {
       // 1. Check AsyncStorage for saved language
       const savedLanguage = await AsyncStorage.getItem(SELECTED_LANGUAGE_KEY);
@@ -50,7 +56,10 @@ const languageDetector = {
       // Try to find the best match based on locale, similar logic to onboarding
       if (deviceLanguage === 'zh') {
          if (deviceScript === 'Hans' || deviceRegion === 'CN' || deviceRegion === 'SG') foundLang = 'zh-CN';
-         else if (deviceScript === 'Hant' || deviceRegion === 'TW' || deviceRegion === 'HK' || deviceRegion === 'MO') foundLang = 'zh-TW';
+         else if (deviceScript === 'Hant' || deviceRegion === 'TW' || deviceRegion === 'HK' || deviceRegion === 'MO') {
+             if (SUPPORTED_LANG_CODES.includes('zh-TW')) foundLang = 'zh-TW';
+             else foundLang = 'zh-CN';
+         }
          // Default 'zh' to 'zh-CN' if no specific region/script matches supported ones
          else foundLang = SUPPORTED_LANG_CODES.includes('zh-CN') ? 'zh-CN' : 'en';
       } else if (deviceLanguage && SUPPORTED_LANG_CODES.includes(deviceLanguage)) {
@@ -61,7 +70,7 @@ const languageDetector = {
       callback(foundLang);
 
     } catch (error) {
-      console.error('i18n: Error detecting language:', error);
+      console.error('i18n: Error detecting language (client-side):', error);
       callback('en'); // Fallback to English on error
     }
   },
