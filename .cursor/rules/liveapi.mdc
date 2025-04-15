@@ -1,0 +1,92 @@
+---
+description: When Alive API Context is used
+globs: 
+alwaysApply: false
+---
+# Live API Context and Client Architecture
+
+This document outlines the architecture of the Live API integration within the application, focusing on how React components interact with the underlying WebSocket client via a React Context and a custom hook.
+
+## 1. `LiveAPIContext` (`contexts/LiveAPIContext.tsx`)
+
+*   **Purpose:** Provides a clean way for React components throughout the application to access the Live API functionality (connection status, client instance, control methods) without prop drilling.
+*   **Core Components:**
+    *   `LiveAPIContext`: A standard React `Context` object created using `createContext`. It's initialized with `undefined`.
+    *   `LiveAPIProvider`: A wrapper component (`FC`) that *must* be placed high up in the component tree (e.g., in `_layout.tsx`).
+        *   It accepts `children`, an optional `url` (defaulting to the Google API endpoint), and a required `apiKey`.
+        *   **Crucially, it calls the `useLiveAPI` hook** to get the actual API state and methods.
+        *   It then uses `LiveAPIContext.Provider` to pass the results of `useLiveAPI` down to all consuming components.
+    *   `useLiveAPIContext`: A custom hook that components use to *consume* the context.
+        *   It uses the standard `useContext(LiveAPIContext)` hook.
+        *   It includes a check to ensure it's used *within* a `LiveAPIProvider`, throwing an error otherwise.
+        *   It returns the value provided by the `LiveAPIProvider` (which is the result of the `useLiveAPI` hook).
+
+## 2. `useLiveAPI` Hook (`hooks/use-live-api.ts`)
+
+*   **Purpose:** Encapsulates the core logic for interacting with the `MultimodalLiveClient`. It manages the client instance, connection state, configuration, and handles events from the client.
+*   **Key Elements:**
+    *   **State Management:** Uses `useState` to manage:
+        *   `connected`: Boolean indicating WebSocket connection status.
+        *   `config`: The `LiveConfig` object sent during connection setup (model, generationConfig, etc.).
+        *   `volume`: A number representing the audio output volume (derived from an `AudioStreamer`).
+    *   **Client Instantiation:** Uses `useMemo` to create a single `MultimodalLiveClient` instance, preventing recreation on every render. The instance depends on the `url` and `apiKey`.
+    *   **Audio Handling:**
+        *   Uses `useRef` for an `AudioStreamer` instance to handle playback of audio received from the server.
+        *   Uses `useEffect` to set up the `AudioStreamer` and attach worklets (like the volume meter).
+    *   **Event Handling:** Uses `useEffect` to subscribe and unsubscribe to events emitted by the `MultimodalLiveClient`:
+        *   `close`: Sets `connected` state to `false`.
+        *   `interrupted`: Stops the audio streamer.
+        *   `audio`: Pushes received audio data (`ArrayBuffer`) to the `AudioStreamer`.
+        *   (Other events like `content`, `toolcall`, etc., are emitted by the client but not explicitly handled *within this hook* in the provided snippet, though the client itself emits them).
+    *   **Exposed Functions:**
+        *   `connect`: An async function that takes the current `config`, disconnects any existing connection, establishes a new WebSocket connection via `client.connect(config)`, and sets `connected` to `true`.
+        *   `disconnect`: An async function that calls `client.disconnect()` and sets `connected` to `false`.
+        *   `setConfig`: Standard state setter for the `config` object.
+    *   **Return Value (`UseLiveAPIResults`):** Returns an object containing:
+        *   `client`: The actual `MultimodalLiveClient` instance. **This is how components get direct access to client methods like `send` and `sendRealtimeInput`**.
+        *   `config`: The current configuration object.
+        *   `setConfig`: Function to update the config.
+        *   `connected`: Current connection status.
+        *   `connect`: Function to initiate connection.
+        *   `disconnect`: Function to terminate connection.
+        *   `volume`: Current audio output volume.
+
+## 3. `MultimodalLiveClient` (`lib/multimodal-live-client.ts`)
+
+*   **Purpose:** A class (extending `EventEmitter3`) that directly manages the WebSocket connection, message serialization/deserialization, and emits events based on received messages. It's designed to be framework-agnostic but is used by the `useLiveAPI` hook.
+*   **Key Features:**
+    *   **WebSocket Management:** Handles creating (`new WebSocket`), connecting, sending messages (`ws.send`), receiving messages (`ws.onmessage`), and closing (`ws.close`) the WebSocket connection.
+    *   **Event Emission:** Uses `eventemitter3` to emit typed events (`open`, `close`, `log`, `audio`, `content`, `interrupted`, `setupcomplete`, `turncomplete`, `toolcall`, `toolcallcancellation`) which the `useLiveAPI` hook (or other listeners) can subscribe to.
+    *   **Message Handling (`receive` method):** Processes incoming `Blob` messages from the WebSocket.
+        *   Converts Blob to JSON (`blobToJSON`).
+        *   Uses type guards (`isToolCallMessage`, `isServerContentMessage`, etc.) to determine the message type.
+        *   Extracts relevant data (e.g., audio buffers from `serverContent.modelTurn.parts`, tool call details).
+        *   Emits the corresponding events with the extracted data.
+    *   **Sending Methods:** Provides structured methods for sending different types of messages to the server:
+        *   `_sendDirect(request)`: Private helper to `JSON.stringify` and send any object over the WebSocket.
+        *   `connect(config)`: Sends the initial `SetupMessage`.
+        *   `sendRealtimeInput(chunks)`: Sends media data (audio/video) formatted as `RealtimeInputMessage`. Used in `ControlTray` for microphone input.
+        *   `sendToolResponse(toolResponse)`: Sends responses to function calls requested by the model, formatted as `ToolResponseMessage`.
+        *   `send(parts, turnComplete)`: Sends user text or other content parts, formatted as `ClientContentMessage`. **This is the method we plan to use for sending context updates.**
+    *   **Logging:** Includes a `log` method to emit structured log messages via the `log` event.
+
+## 4. Data Flow Summary
+
+1.  **Initialization:** `LiveAPIProvider` in `_layout.tsx` calls `useLiveAPI`.
+2.  **`useLiveAPI`:** Creates a `MultimodalLiveClient` instance.
+3.  **Component Access:** A component (e.g., `ControlTray`) calls `useLiveAPIContext()` to get the results from `useLiveAPI`.
+4.  **Connecting:** The component calls the `connect()` function obtained from the context.
+5.  **`useLiveAPI` (`connect`):** Calls `client.connect(config)`.
+6.  **`MultimodalLiveClient` (`connect`):** Establishes WebSocket connection, sends setup message.
+7.  **Sending Data (e.g., Mic):**
+    *   `ControlTray` captures audio.
+    *   It calls `client.sendRealtimeInput(audioChunk)` obtained via the context.
+    *   `MultimodalLiveClient` sends the formatted `RealtimeInputMessage` over the WebSocket.
+8.  **Receiving Data (e.g., Audio Response):**
+    *   WebSocket receives a message.
+    *   `MultimodalLiveClient` (`receive` method) processes it.
+    *   If it's audio, it emits an `audio` event with the `ArrayBuffer`.
+    *   `useLiveAPI` (listening for `audio`) receives the event and passes the data to its `AudioStreamer`.
+9.  **Disconnecting:** Component calls `disconnect()` from context -> `useLiveAPI` calls `client.disconnect()` -> `MultimodalLiveClient` closes the WebSocket.
+
+This structure effectively separates the low-level WebSocket handling (`MultimodalLiveClient`) from the React state management and lifecycle integration (`useLiveAPI`), providing a clean interface to components via `LiveAPIContext`.
