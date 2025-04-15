@@ -19,67 +19,43 @@ import React, { memo, ReactNode, RefObject, useEffect, useRef, useState } from "
 import { StyleSheet, View, TouchableOpacity, Text, Platform } from 'react-native';
 
 import { useLiveAPIContext } from "../../contexts/LiveAPIContext";
+// Restoring imports
 import { UseMediaStreamResult } from "../../hooks/use-media-stream-mux";
 import { useScreenCapture } from "../../hooks/use-screen-capture";
 import { useWebcam } from "../../hooks/use-webcam";
 import { AudioRecorder } from "../../lib/audio-recorder";
-import AudioPulse from "../audio-pulse/AudioPulse";
 
 export type ControlTrayProps = {
-  // Changed videoRef type for simplicity, as HTMLVideoElement doesn't exist
-  videoRef: RefObject<any>;
+  // Restore props
+  videoRef: RefObject<any>; // Keep type any for RN compatibility
   children?: ReactNode;
   supportsVideo: boolean;
   onVideoStreamChange?: (stream: MediaStream | null) => void;
 };
 
-type MediaStreamButtonProps = {
-  isStreaming: boolean;
-  onIcon: string; // Keep as string for now, represent with Text
-  offIcon: string; // Keep as string for now, represent with Text
-  start: () => Promise<any>;
-  stop: () => any;
-};
-
-/**
- * button used for triggering webcam or screen-capture
- */
-const MediaStreamButton = memo(
-  ({ isStreaming, onIcon, offIcon, start, stop }: MediaStreamButtonProps) => {
-    const handlePress = isStreaming ? stop : start;
-    const iconText = isStreaming ? onIcon : offIcon;
-
-    return (
-      <TouchableOpacity style={styles.actionButton} onPress={handlePress}>
-        {/* Use Text for icons for now */}
-        <Text style={styles.iconText}>{iconText}</Text>
-      </TouchableOpacity>
-    );
-  }
-);
-MediaStreamButton.displayName = 'MediaStreamButton';
+// MediaStreamButton removed previously, not restored as video is complex
 
 function ControlTray({
-  videoRef, // Ref is now less relevant without web video element
+  // Restore props
+  videoRef,
   children,
   onVideoStreamChange = () => {},
-  supportsVideo,
+  supportsVideo, // Keep this prop, even if unused for now
 }: ControlTrayProps) {
-  // Video streams logic might need native adaptation later
+  // Restore state and refs related to mic, video, audio pulse
+  // Video streams logic might need native adaptation later if video is re-enabled
   const videoStreams = [useWebcam(), useScreenCapture()];
   const [activeVideoStream, setActiveVideoStream] =
     useState<MediaStream | null>(null);
   const [webcam, screenCapture] = videoStreams;
-  const [inVolume, setInVolume] = useState(0); // Kept for AudioPulse
   const [audioRecorder] = useState(() => new AudioRecorder());
-  const [muted, setMuted] = useState(false);
-  // Removed renderCanvasRef
-  // Changed connectButtonRef type
+  const [muted, setMuted] = useState(false); // Restore muted state
   const connectButtonRef = useRef<any>(null);
 
-  const { client, connected, connect, disconnect, volume } =
+  const { client, connected, connect, disconnect } =
     useLiveAPIContext();
 
+  // Restore useEffect for AudioRecorder
   useEffect(() => {
     const onData = (base64: string) => {
       client.sendRealtimeInput([
@@ -89,181 +65,137 @@ function ControlTray({
         },
       ]);
     };
-    // Volume listener for AudioPulse (not visual mic button pulse)
-    const handleVolume = (vol: number) => setInVolume(vol);
 
     if (connected && !muted && audioRecorder) {
-      audioRecorder.on("data", onData).on("volume", handleVolume).start();
+      audioRecorder.on("data", onData).start();
     } else {
       audioRecorder.stop();
     }
     return () => {
-      audioRecorder.off("data", onData).off("volume", handleVolume);
+      audioRecorder.off("data", onData);
     };
   }, [connected, client, muted, audioRecorder]);
 
-  // Simplified changeStreams logic - native implementation would differ
+  // Restore simplified changeStreams logic (still needs native implementation)
   const changeStreams = (next?: UseMediaStreamResult) => async () => {
-    // Placeholder - Native video requires different handling
     console.log("Change video stream (native implementation needed)");
     if (next) {
-      // const mediaStream = await next.start(); // This hook needs native adaptation
-      // setActiveVideoStream(mediaStream);
-      // onVideoStreamChange(mediaStream);
+      // Native logic needed
     } else {
       setActiveVideoStream(null);
       onVideoStreamChange(null);
     }
-    // videoStreams.filter((msr) => msr !== next).forEach((msr) => msr.stop()); // Needs native adaptation
   };
 
-  // Determine styles based on connection state
-  const connectionContainerStyle = [
-    styles.connectionContainer,
-    connected && styles.connectionContainerConnected // Example conditional style
-  ];
-   const actionsNavStyle = [
+  // Restore style logic
+  const actionsNavStyle = [
     styles.actionsNav,
     !connected && styles.disabled // Example conditional style
   ];
-   const connectToggleStyle = [
+  const connectToggleStyle = [
     styles.actionButton,
-    styles.connectToggleButton, // Specific style for connect button
-    connected && styles.connectToggleButtonConnected // Example conditional style
+    styles.connectToggleButton,
+    connected && styles.connectToggleButtonConnected
   ];
-   const micButtonStyle = [
+  const micButtonStyle = [
     styles.actionButton,
-    styles.micButton, // Specific style for mic button
-    !muted && styles.micButtonActive, // Example conditional style
-    !connected && styles.disabled // Disable mic button look when not connected
-   ];
-   const textIndicatorStyle = [
-       styles.textIndicator,
-       !connected && styles.textIndicatorHidden // Hide text when not connected
-   ]
+    styles.micButton,
+    !muted && styles.micButtonActive, // Style when mic is on (unmuted)
+    !connected && styles.disabled // Style when disconnected
+  ];
+  const textIndicatorStyle = [
+    styles.textIndicator,
+    !connected && styles.textIndicatorHidden
+  ];
 
   return (
-    // Use View instead of section
+    // Restore original outer View structure
     <View style={styles.controlTray}>
-      {/* Removed canvas */}
-      {/* Use View instead of nav */}
+      {/* Restore actionsNav View */}
       <View style={actionsNavStyle}>
-        {/* Use TouchableOpacity instead of button */}
+        {/* Restore Mic Button */}
         <TouchableOpacity
           style={micButtonStyle}
           onPress={() => setMuted(!muted)}
           disabled={!connected} // Disable interaction when not connected
         >
-          {/* Use Text for icons */}
           <Text style={styles.iconText}>{!muted ? "MIC" : "MUT"}</Text>
         </TouchableOpacity>
 
-        {/* Use View instead of div */}
-        <View style={[styles.actionButton, styles.noAction]}>
-          {/* AudioPulse expects volume */}
-          <AudioPulse volume={volume} active={connected} hover={false} />
-        </View>
-
-        {/* Video buttons removed for simplicity, native implementation needed */}
-        {/* {supportsVideo && (
-          <>
-            <MediaStreamButton ... />
-            <MediaStreamButton ... />
-          </>
-        )} */}
+        {/* Video buttons still commented out */}
         {children}
       </View>
 
-      {/* Use View instead of div */}
-      <View style={connectionContainerStyle}>
-        {/* Use View instead of div */}
+      {/* Move Connection Button and Text next to actionsNav */}
+      <View style={styles.connectionGroup}>
         <View style={styles.connectionButtonContainer}>
           <TouchableOpacity
             ref={connectButtonRef}
             style={connectToggleStyle}
             onPress={connected ? disconnect : connect}
           >
-            {/* Use Text for icons */}
             <Text style={styles.iconText}>
               {connected ? "PAUSE" : "PLAY"}
             </Text>
           </TouchableOpacity>
         </View>
-        {/* Use Text instead of span */}
         <Text style={textIndicatorStyle}>Streaming</Text>
       </View>
     </View>
   );
 }
 
-// Add StyleSheet definition
+// Restore previous StyleSheet definition
 const styles = StyleSheet.create({
   controlTray: {
-    // Position this in _layout.tsx if needed, e.g., bottom: 20
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'flex-end', // Align items to bottom (connection button below nav)
+    flexDirection: 'column',
+    alignItems: 'center',
     paddingHorizontal: 10,
-    paddingBottom: Platform.OS === 'ios' ? 30 : 15, // Add padding for safe areas / home indicator
-    width: '100%', // Take full width for positioning
+    paddingBottom: Platform.OS === 'ios' ? 30 : 15,
   },
   actionsNav: {
-    flexDirection: 'row',
-    backgroundColor: '#f0f0f0', // Light grey background
+    backgroundColor: '#f0f0f0',
     borderRadius: 30,
     padding: 8,
     alignItems: 'center',
-    marginRight: 10, // Space between nav and connection button
+    marginBottom: 8,
     borderWidth: 1,
     borderColor: '#cccccc',
   },
-  connectionContainer: {
+  connectionGroup: {
     alignItems: 'center',
-    justifyContent: 'flex-end', // Align items to bottom
-  },
-  connectionContainerConnected: {
-    // Add styles for connected state if needed
+    justifyContent: 'flex-end',
   },
   connectionButtonContainer: {
     padding: 8,
-    backgroundColor: '#f0f0f0', // Light grey background
+    backgroundColor: '#f0f0f0',
     borderRadius: 30,
     borderWidth: 1,
     borderColor: '#cccccc',
-    marginBottom: 4, // Space between button and text
+    marginVertical: 4,
   },
   actionButton: {
     width: 48,
     height: 48,
-    borderRadius: 24, // Make it circular
-    backgroundColor: '#e0e0e0', // Medium grey
+    borderRadius: 24,
+    backgroundColor: '#e0e0e0',
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 4, // Space between buttons in actionsNav
+    marginHorizontal: 4,
     borderWidth: 1,
-    borderColor: 'transparent', // Default no border
+    borderColor: 'transparent',
   },
   connectToggleButton: {
-     backgroundColor: 'blue', // Blue when disconnected
+     backgroundColor: 'blue',
   },
   connectToggleButtonConnected: {
-     backgroundColor: 'darkblue', // Darker blue when connected
+     backgroundColor: 'darkblue',
   },
   micButton: {
-     backgroundColor: 'red', // Red when active/unmuted
+     backgroundColor: 'gray',
   },
   micButtonActive: {
-      backgroundColor: 'darkred', // Darker red when active/unmuted
-  },
-  noAction: {
-    backgroundColor: 'transparent', // No background for pulse container
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-  },
-  iconText: {
-    color: '#ffffff', // White icon text
-    fontWeight: 'bold',
-    fontSize: 10, // Smaller text for icons
+      backgroundColor: 'red',
   },
   textIndicator: {
     fontSize: 11,
@@ -273,11 +205,15 @@ const styles = StyleSheet.create({
       opacity: 0,
   },
   disabled: {
-    opacity: 0.5, // Make disabled elements look faded
-    // Ensure background/border show disabled state if needed
+    opacity: 0.5,
     backgroundColor: '#f5f5f5',
     borderColor: '#d0d0d0'
-  }
+  },
+  iconText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+    fontSize: 10,
+  },
 });
 
 export default memo(ControlTray);

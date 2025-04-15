@@ -145,10 +145,9 @@ export default function RootLayout() {
         <StatusBar style="auto" />
         {/* Render ControlTray only on client-side web or native, not during SSR if applicable */}
         {Platform.OS !== 'web' || typeof window !== 'undefined' ? (
-           <ControlTray
-              videoRef={videoRef} // Pass the dummy ref
-              supportsVideo={false} // Disable video features for now
-           />
+          <View style={styles.controlTrayWrapper}>
+            <ControlTray videoRef={videoRef} supportsVideo={false} />
+          </View>
         ) : null}
       </View>
     </LiveAPIProvider>
@@ -172,4 +171,12 @@ const styles = StyleSheet.create({
   },
   // Add styles for ControlTray positioning later if needed
   // e.g., controlTray: { position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 10 }
+  controlTrayWrapper: {
+    position: 'absolute', // Make it float
+    bottom: Platform.OS === 'ios' ? 30 : 20, // Position near bottom (adjust as needed, account for safe area)
+    left: 0,
+    right: 0,
+    zIndex: 10, // Ensure it floats above other content
+    alignItems: 'flex-end', // Align panel to the right edge
+  },
 });
