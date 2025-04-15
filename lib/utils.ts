@@ -23,10 +23,25 @@ export type GetAudioContextOptions = AudioContextOptions & {
   export const audioContext: (
     options?: GetAudioContextOptions,
   ) => Promise<AudioContext> = (() => {
-    const didInteract = new Promise((res) => {
-      window.addEventListener("pointerdown", res, { once: true });
-      window.addEventListener("keydown", res, { once: true });
-    });
+    // Define didInteract promise creator, but don't call it immediately
+    let didInteractPromise: Promise<void> | null = null;
+    const createDidInteractPromise = () => {
+      if (!didInteractPromise) {
+        didInteractPromise = new Promise((res) => {
+          // Only add listeners if window exists (client-side)
+          if (typeof window !== 'undefined') {
+            console.log('Attaching interaction listeners for AudioContext');
+            window.addEventListener("pointerdown", () => res(), { once: true });
+            window.addEventListener("keydown", () => res(), { once: true });
+          } else {
+            // Resolve immediately if not in a browser environment
+            // Or potentially reject if interaction is strictly required
+            res();
+          }
+        });
+      }
+      return didInteractPromise;
+    };
   
     return async (options?: GetAudioContextOptions) => {
       try {
@@ -46,7 +61,8 @@ export type GetAudioContextOptions = AudioContextOptions & {
         }
         return ctx;
       } catch (_e) {
-        await didInteract;
+        // Ensure interaction promise is created and awaited *here*
+        await createDidInteractPromise();
         if (options?.id && map.has(options.id)) {
           const ctx = map.get(options.id);
           if (ctx) {

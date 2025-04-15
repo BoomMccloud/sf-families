@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import "./audio-pulse.scss";
 import React from "react";
-import { useEffect, useRef } from "react";
-import c from "classnames";
+import { StyleSheet, View } from 'react-native';
 
 const lineCount = 3;
 
@@ -28,37 +26,45 @@ export type AudioPulseProps = {
 };
 
 export default function AudioPulse({ active, volume, hover }: AudioPulseProps) {
-  const lines = useRef<HTMLDivElement[]>([]);
-
-  useEffect(() => {
-    let timeout: number | null = null;
-    const update = () => {
-      lines.current.forEach(
-        (line, i) =>
-        (line.style.height = `${Math.min(
-          24,
-          4 + volume * (i === 1 ? 400 : 60),
-        )}px`),
-      );
-      timeout = window.setTimeout(update, 100);
-    };
-
-    update();
-
-    return () => clearTimeout((timeout as number)!);
-  }, [volume]);
+  const containerStyle = [
+    styles.audioPulse,
+    active ? styles.audioPulseActive : styles.audioPulseInactive,
+  ];
 
   return (
-    <div className={c("audioPulse", { active, hover })}>
+    <View style={containerStyle}>
       {Array(lineCount)
         .fill(null)
         .map((_, i) => (
-          <div
+          <View
             key={i}
-            ref={(el) => (lines.current[i] = el!)}
-            style={{ animationDelay: `${i * 133}ms` }}
+            style={styles.line}
           />
         ))}
-    </div>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  audioPulse: {
+    flexDirection: 'row',
+    width: 24,
+    height: 24,
+    justifyContent: 'space-around',
+    alignItems: 'flex-end',
+    paddingVertical: 5,
+    opacity: 0.5,
+  },
+  audioPulseActive: {
+    opacity: 1,
+  },
+  audioPulseInactive: {
+      opacity: 0.3,
+  },
+  line: {
+    width: 4,
+    height: '50%',
+    backgroundColor: '#a0a0a0',
+    borderRadius: 2,
+  },
+});
