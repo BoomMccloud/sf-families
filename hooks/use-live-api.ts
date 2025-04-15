@@ -23,6 +23,7 @@ import { LiveConfig } from "../types/multimodal-live-types";
 import { AudioStreamer } from "../lib/audio-streamer";
 import { audioContext } from "../lib/utils";
 import VolMeterWorket from "../lib/worklets/vol-meter";
+import { Part } from "@google/generative-ai";
 
 export type UseLiveAPIResults = {
   client: MultimodalLiveClient;
@@ -31,6 +32,7 @@ export type UseLiveAPIResults = {
   connected: boolean;
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
+  updateLanguageAndReconnect: (languageCode: string) => Promise<void>;
   volume: number;
 };
 
@@ -107,6 +109,51 @@ export function useLiveAPI({
     setConnected(false);
   }, [setConnected, client]);
 
+  const updateLanguageAndReconnect = useCallback(async (languageCode: string) => {
+    // 1. Construct the system instruction
+    const instructionText = `You are the helpful assistant for the SF Families App.
+The SF Families App will help users find information and support for their child's early education. In this first phase, users can:
+• Learn about their child's development: Access helpful content about how children grow and learn.
+• Discover ECE financial resources: Find information about financial aid options like ELFA, FRC, and state subsidies to help pay for early care and education programs.
+• Understand available support: Increase awareness of the financial assistance available for early childhood education.
+
+This is currently a demo application. If the user asks questions beyond these topics or requests features not listed, let them know that new features will be added in the future.
+
+RESPOND IN ${languageCode}. YOU MUST RESPOND UNMISTAKABLY IN ${languageCode}.`;
+    const systemInstruction = { parts: [{ text: instructionText }] };
+
+    // 2. Create the new config object, deeply merging generationConfig
+    const newConfig: LiveConfig = {
+      ...config, // Spread existing config
+      systemInstruction, // Add new system instruction
+      generationConfig: {
+        ...config.generationConfig, // Spread existing generation config
+        speechConfig: {
+          ...config.generationConfig?.speechConfig, // Spread existing speech config
+          language_code: languageCode, // Set the new language code
+        },
+      },
+    };
+
+    // Update the config state (important for subsequent calls or UI display)
+    setConfig(newConfig);
+
+    console.log("Updating language settings and reconnecting with:", newConfig);
+
+    // Perform the disconnect and connect logic directly here
+    // using the newConfig object to avoid state update delays.
+    client.disconnect();
+    try {
+      await client.connect(newConfig);
+      setConnected(true);
+      console.log("Reconnected successfully with updated language settings.");
+    } catch (error) {
+      console.error("Failed to reconnect after updating language settings:", error);
+      setConnected(false);
+      throw error;
+    }
+  }, [client, config, setConfig, setConnected]);
+
   return {
     client,
     config,
@@ -114,6 +161,7 @@ export function useLiveAPI({
     connected,
     connect,
     disconnect,
+    updateLanguageAndReconnect,
     volume,
   };
 }

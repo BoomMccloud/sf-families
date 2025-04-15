@@ -13,6 +13,7 @@ import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CHILDREN_COUNT_KEY = '@childrenCount';
+const ONBOARDING_COMPLETED_KEY = '@onboardingCompleted';
 const MIN_STEPPER_DISPLAY_VALUE = 5; // The value stepper starts at / decrements to
 
 export default function ChildrenScreen() {
@@ -58,6 +59,8 @@ export default function ChildrenScreen() {
         try {
             await AsyncStorage.setItem(CHILDREN_COUNT_KEY, finalCount.toString());
             console.log('Children count saved:', finalCount);
+            await AsyncStorage.setItem(ONBOARDING_COMPLETED_KEY, 'true');
+            console.log('Onboarding marked as completed.');
             router.push('/(tabs)');
         } catch (e) {
             console.error('Failed to save children count:', e);

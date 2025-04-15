@@ -178,5 +178,6 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 10, // Ensure it floats above other content
     alignItems: 'flex-end', // Align panel to the right edge
+    pointerEvents: 'box-none',
   },
 });

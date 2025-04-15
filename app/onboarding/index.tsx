@@ -4,8 +4,9 @@ import * as Localization from 'expo-localization';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
+import { useLiveAPIContext } from '@/contexts/LiveAPIContext';
 
-// Define supported languages with native names and codes
+// Define supported languages with native names and BCP-47 codes from Chirp 3 list
 const supportedLanguages = [
     { code: 'en', name: 'English' },
     { code: 'es', name: 'Español' },
@@ -26,6 +27,9 @@ export default function OnboardingScreen() {
     const router = useRouter();
     const colorScheme = useColorScheme();
     const styles = getStyles(colorScheme);
+    const { updateLanguageAndReconnect } = useLiveAPIContext();
+
+    let defaultLangCode: string | null = null;
 
     useEffect(() => {
         // Detect system language to *pre-select* the most likely choice
@@ -37,19 +41,23 @@ export default function OnboardingScreen() {
         // Safely access scriptCode, checking if the property exists and is a string
         const systemScriptCode = locale && 'scriptCode' in locale && typeof locale.scriptCode === 'string' ? locale.scriptCode : undefined;
 
-        let defaultLangCode: string | null = null;
+        // Original detection logic
         if (systemLanguageCode === 'zh') {
-             if (systemScriptCode === 'Hans') defaultLangCode = 'zh-CN';
-             else if (systemScriptCode === 'Hant') defaultLangCode = 'zh-TW';
-             else if (systemRegionCode === 'CN' || systemRegionCode === 'SG') defaultLangCode = 'zh-CN';
-             else if (systemRegionCode === 'TW' || systemRegionCode === 'HK' || systemRegionCode === 'MO') defaultLangCode = 'zh-TW';
-             else defaultLangCode = 'zh-CN'; // Default 'zh'
+            // Fallback for Chinese variants if exact tag not found
+            if (systemScriptCode === 'Hans') defaultLangCode = 'zh-CN';
+            else if (systemScriptCode === 'Hant') defaultLangCode = 'zh-TW';
+            else if (systemRegionCode === 'CN' || systemRegionCode === 'SG') defaultLangCode = 'zh-CN';
+            else if (systemRegionCode === 'TW' || systemRegionCode === 'HK' || systemRegionCode === 'MO') defaultLangCode = 'zh-TW';
+            else defaultLangCode = 'zh-CN'; // Default 'zh'
         } else {
-             const supportedLang = supportedLanguages.find(lang => lang.code === systemLanguageCode);
-             if (supportedLang) {
-                 defaultLangCode = supportedLang.code;
-             }
+            // Original fallback
+            const supportedLang = supportedLanguages.find(lang => lang.code === systemLanguageCode);
+            if (supportedLang) {
+                defaultLangCode = supportedLang.code;
+            }
         }
+
+        // Final fallback to en
         setSelectedLanguage(defaultLangCode ?? 'en');
         console.log('Onboarding: Pre-selected language based on detection:', defaultLangCode ?? 'en');
     }, []); // Run only once on mount
@@ -75,15 +83,44 @@ export default function OnboardingScreen() {
 
                 // Save selection and onboarding status
                 await AsyncStorage.setItem(SELECTED_LANGUAGE_KEY, selectedLanguage);
-                await AsyncStorage.setItem(ONBOARDING_COMPLETED_KEY, 'true');
                 console.log('Language and onboarding status saved.');
 
-                router.push('/onboarding/children');
+                // Update system instruction and reconnect
+                try {
+                    // Map app language code to API BCP-47 code
+                    const appLanguageCode = selectedLanguage;
+                    let apiLanguageCode: string;
+                    switch (appLanguageCode) {
+                        case 'en': apiLanguageCode = 'en-US'; break; // Default English to US
+                        case 'es': apiLanguageCode = 'es-US'; break; // Default Spanish to US
+                        case 'zh-CN': apiLanguageCode = 'cmn-CN'; break; // Simplified Chinese
+                        case 'zh-TW': apiLanguageCode = 'cmn-CN'; break; // Map Traditional Chinese to Simplified Chinese for API
+                        case 'fil': apiLanguageCode = 'en-US'; break; // Map Filipino to English US for API
+                        case 'vi': apiLanguageCode = 'vi-VN'; break; // Vietnamese
+                        case 'ru': apiLanguageCode = 'ru-RU'; break; // Russian
+                        default: apiLanguageCode = 'en-US'; // Fallback to English US
+                    }
+
+                    // const instructionText = `RESPOND IN ${languageCode}. YOU MUST RESPOND UNMISTAKABLY IN ${languageCode}.`;
+                    // const newSystemInstruction = { parts: [{ text: instructionText }] }; // This will be constructed in the hook function
+                    console.log(`Attempting to set language code ${apiLanguageCode} (mapped from ${appLanguageCode}) and reconnect...`);
+                    await updateLanguageAndReconnect(apiLanguageCode); // Pass the mapped BCP-47 code
+                    console.log('System instruction updated and reconnected successfully.');
+                    // Proceed with navigation only after successful reconnect
+                    router.push('/onboarding/children');
+                } catch (reconnectError) {
+                    console.error('Failed to set system instruction and reconnect:', reconnectError);
+                    // Handle the error appropriately - maybe show a message to the user?
+                    // For now, we stop processing and don't navigate.
+                    setIsProcessing(false);
+                    // Optionally, alert the user:
+                    // Alert.alert("Connection Error", "Could not update language settings. Please try again.");
+                    return; // Stop execution here if reconnect fails
+                }
             } catch (e) {
                 console.error('Failed to save onboarding data or change language:', e);
                 setIsProcessing(false);
             }
-            // No need to setIsProcessing(false) on success because screen is replaced
         } else {
             console.warn('No language selected.');
         }
