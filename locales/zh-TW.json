@@ -7,9 +7,23 @@
         "subtitle": "請在下方選擇您的偏好語言。",
         "continue": "繼續"
     },
+    "childrenScreen": {
+        "title": "您有多少個孩子？",
+        "or": "或",
+        "placeholder5plus": "5個或更多",
+        "inputHint": "請選擇1-4或輸入5+",
+        "continue": "繼續",
+        "errorTitle": "需要選擇",
+        "errorMessage": "請選擇孩子的數量或輸入5個或更多。",
+        "manualInputError": "如果使用文字欄位，請輸入5個或更多。",
+        "saveError": "無法儲存您的選擇。請重試。"
+    },
     "tabs": {
          "home": "首頁",
          "settings": "設定"
+    },
+    "common": {
+        "error": "錯誤"
     }
   }
 }

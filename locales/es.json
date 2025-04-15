@@ -7,9 +7,23 @@
         "subtitle": "Selecciona tu idioma preferido a continuación.",
         "continue": "Continuar"
     },
+    "childrenScreen": {
+        "title": "¿Cuántos hijos tienes?",
+        "or": "O",
+        "placeholder5plus": "5 o más",
+        "inputHint": "Selecciona 1-4 o ingresa 5+",
+        "continue": "Continuar",
+        "errorTitle": "Selección Requerida",
+        "errorMessage": "Por favor, selecciona el número de hijos o ingresa 5 o más.",
+        "manualInputError": "Por favor, ingresa 5 o más si usas el campo de texto.",
+        "saveError": "No se pudo guardar tu selección. Por favor, inténtalo de nuevo."
+    },
      "tabs": {
          "home": "Inicio",
          "settings": "Ajustes"
+    },
+    "common": {
+        "error": "Error"
     }
   }
 }

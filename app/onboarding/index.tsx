@@ -78,7 +78,7 @@ export default function OnboardingScreen() {
                 await AsyncStorage.setItem(ONBOARDING_COMPLETED_KEY, 'true');
                 console.log('Language and onboarding status saved.');
 
-                router.replace('/(tabs)');
+                router.push('/onboarding/children');
             } catch (e) {
                 console.error('Failed to save onboarding data or change language:', e);
                 setIsProcessing(false);

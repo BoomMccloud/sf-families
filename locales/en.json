@@ -7,9 +7,23 @@
         "subtitle": "Select your preferred language below.",
         "continue": "Continue"
     },
+    "childrenScreen": {
+        "title": "How many children do you have?",
+        "or": "Or",
+        "placeholder5plus": "5 or more",
+        "inputHint": "Please select 1-4 or enter 5+",
+        "continue": "Continue",
+        "errorTitle": "Selection Required",
+        "errorMessage": "Please select the number of children or enter 5 or more.",
+        "manualInputError": "Please enter 5 or more if using the text field.",
+        "saveError": "Could not save your selection. Please try again."
+    },
     "tabs": {
          "home": "Home",
          "settings": "Settings"
-    }
+    },
+     "common": {
+         "error": "Error"
+     }
   }
 }

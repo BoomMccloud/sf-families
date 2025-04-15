@@ -1,19 +1,25 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack, useRouter, Href } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState, useCallback } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { View, StyleSheet, Text, Platform } from 'react-native';
 import 'react-native-reanimated';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import '../lib/i18n'; // Import to initialize i18next (assuming path lib/i18n.ts)
 import i18n from '../lib/i18n'; // Import the configured instance
+import { LiveAPIProvider } from '@/contexts/LiveAPIContext';
+import ControlTray from '@/components/control-tray/ControlTray';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+
+// Retrieve API Key (Do this outside the component to avoid re-running)
+const apiKey = Constants.expoConfig?.extra?.apiKey as string | undefined;
 
 const ONBOARDING_COMPLETED_KEY = '@onboardingCompleted';
 
@@ -25,6 +31,8 @@ export default function RootLayout() {
   const [isOnboardingComplete, setIsOnboardingComplete] = useState<boolean | null>(null);
   const [isI18nReady, setIsI18nReady] = useState(false); // State for i18n readiness
   const router = useRouter();
+  // Dummy ref for video - not used in native for now
+  const videoRef = useRef<any>(null);
 
   // Effect for checking onboarding status
   useEffect(() => {
@@ -88,7 +96,6 @@ export default function RootLayout() {
     };
   }, []); // Run only once on mount
 
-
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded && isOnboardingComplete !== null && isI18nReady) {
       console.log('Layout Ready: Fonts, Onboarding Status, i18n');
@@ -108,31 +115,61 @@ export default function RootLayout() {
     }
   }, [fontsLoaded, isOnboardingComplete, isI18nReady, router]);
 
-  // Wait until fonts AND i18n are ready before rendering anything
-  // This prevents rendering before translations are loaded or fonts are ready
-  if (!fontsLoaded || !isI18nReady) {
-    return null; // Keep showing splash screen (or return a custom loading component)
+  // Check if everything is ready before rendering the main layout
+  if (!fontsLoaded || !isI18nReady || isOnboardingComplete === null) {
+    return null; // Keep showing splash screen (or a loading view)
+  }
+
+  // Check for API Key before rendering the provider and tray
+  if (!apiKey) {
+    // Render an error message or a specific component if the API key is missing
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>API Key is missing. Please check your .env file and app.config.js</Text>
+      </View>
+    );
   }
 
   // Render the app structure once everything is ready
   return (
-    // react-i18next's initReactI18next handles the provider context implicitly
-    <View style={styles.rootContainer} onLayout={onLayoutRootView}>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="onboarding" />
-          <Stack.Screen name="test" />
-          <Stack.Screen name="+not-found" />
-        </Stack>
+    <LiveAPIProvider apiKey={apiKey}>
+      <View style={styles.rootContainer} onLayout={onLayoutRootView}>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="onboarding" />
+            <Stack.Screen name="test" />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+        </ThemeProvider>
         <StatusBar style="auto" />
-      </ThemeProvider>
-    </View>
+        {/* Render ControlTray only on client-side web or native, not during SSR if applicable */}
+        {Platform.OS !== 'web' || typeof window !== 'undefined' ? (
+           <ControlTray
+              videoRef={videoRef} // Pass the dummy ref
+              supportsVideo={false} // Disable video features for now
+           />
+        ) : null}
+      </View>
+    </LiveAPIProvider>
   );
 }
 
 const styles = StyleSheet.create({
   rootContainer: {
     flex: 1,
-  }
+    position: 'relative', // Needed for absolute positioning of children
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+  },
+  // Add styles for ControlTray positioning later if needed
+  // e.g., controlTray: { position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 10 }
 });

@@ -1,4 +1,6 @@
-{
+require('dotenv').config(); // Load environment variables from .env file
+
+export default {
   "expo": {
     "name": "sf-fam",
     "slug": "sf-fam",
@@ -37,6 +39,13 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "apiKey": process.env.GOOGLE_API_KEY,
+      "eas": {
+        // Optional: Add EAS build configuration if needed
+        // "projectId": "your-eas-project-id"
+      }
     }
   }
-}
+};

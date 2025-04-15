@@ -4,14 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Localization from 'expo-localization';
 import { Platform } from 'react-native';
 
-// Import all your translation files
-import en from '../locales/en.json';
-import es from '../locales/es.json';
-import zhCN from '../locales/zh-CN.json';
-import zhTW from '../locales/zh-TW.json';
-import fil from '../locales/fil.json';
-import vi from '../locales/vi.json';
-import ru from '../locales/ru.json';
+// Unused imports removed - translation files are loaded via require below
 
 const LANGUAGES = {
     en: require('../locales/en.json'),
@@ -45,11 +38,13 @@ const languageDetector = {
 
       // 2. If no saved language, detect device locale
       const locales = Localization.getLocales();
-      const deviceLanguage = locales[0]?.languageCode; // e.g., 'en'
-      const deviceRegion = locales[0]?.regionCode; // e.g., 'US'
-      const deviceScript = locales[0]?.scriptCode; // e.g., 'Hans'
+      const deviceLocale = locales[0]; // Get the first locale object
+      const deviceLanguage = deviceLocale?.languageCode; // e.g., 'en'
+      const deviceRegion = deviceLocale?.regionCode; // e.g., 'US'
+      // Safely access scriptCode, treat as null if missing
+      const deviceScript = (deviceLocale as any)?.scriptCode ?? null; // e.g., 'Hans'
 
-      console.log('i18n: Detected device locale:', locales[0]);
+      console.log('i18n: Detected device locale:', deviceLocale);
 
       let foundLang = 'en'; // Default to English
 
@@ -86,7 +81,6 @@ i18n
   .use(languageDetector) // Use our custom detector
   .use(initReactI18next) // Passes i18n down to react-i18next
   .init({
-    compatibilityJSON: 'v3', // For react-native
     resources: LANGUAGES,
     react: {
       useSuspense: false, // Set to false for React Native non-Suspense usage

@@ -7,9 +7,23 @@
         "subtitle": "Piliin ang iyong gustong wika sa ibaba.",
         "continue": "Magpatuloy"
     },
+    "childrenScreen": {
+        "title": "Ilan ang iyong anak?",
+        "or": "O",
+        "placeholder5plus": "5 o higit pa",
+        "inputHint": "Pumili ng 1-4 o ilagay ang 5+",
+        "continue": "Magpatuloy",
+        "errorTitle": "Kailangan ng Pagpili",
+        "errorMessage": "Mangyaring piliin ang bilang ng mga anak o ilagay ang 5 o higit pa.",
+        "manualInputError": "Mangyaring ilagay ang 5 o higit pa kung gagamitin ang text field.",
+        "saveError": "Hindi mai-save ang iyong pinili. Pakisubukang muli."
+    },
     "tabs": {
          "home": "Home",
          "settings": "Mga Setting"
+    },
+    "common": {
+        "error": "Error"
     }
   }
 }

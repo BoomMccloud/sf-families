@@ -7,9 +7,23 @@
         "subtitle": "Chọn ngôn ngữ ưa thích của bạn ở bên dưới.",
         "continue": "Tiếp tục"
     },
+    "childrenScreen": {
+        "title": "Bạn có bao nhiêu con?",
+        "or": "Hoặc",
+        "placeholder5plus": "5 trở lên",
+        "inputHint": "Vui lòng chọn 1-4 hoặc nhập 5+",
+        "continue": "Tiếp tục",
+        "errorTitle": "Yêu cầu lựa chọn",
+        "errorMessage": "Vui lòng chọn số lượng con hoặc nhập 5 trở lên.",
+        "manualInputError": "Vui lòng nhập 5 trở lên nếu sử dụng trường văn bản.",
+        "saveError": "Không thể lưu lựa chọn của bạn. Vui lòng thử lại."
+    },
     "tabs": {
          "home": "Trang chủ",
          "settings": "Cài đặt"
+    },
+    "common": {
+        "error": "Lỗi"
     }
   }
 }
