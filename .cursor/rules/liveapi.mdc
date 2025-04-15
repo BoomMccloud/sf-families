@@ -1,7 +1,7 @@
 ---
-description: When Alive API Context is used
+description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 # Live API Context and Client Architecture
 
