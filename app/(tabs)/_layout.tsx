@@ -3,7 +3,7 @@ import React from 'react';
 import { Platform } from 'react-native';
 
 import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
+import { Ionicons } from '@expo/vector-icons';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -15,6 +15,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarInactiveTintColor: Colors[colorScheme ?? 'light'].tabIconDefault,
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
@@ -31,7 +32,7 @@ export default function TabLayout() {
         options={{
           title: 'Early Learning',
           tabBarIcon: ({ color, focused }) => (
-            <IconSymbol size={28} name={focused ? 'house.fill' : 'house'} color={color} />
+            <Ionicons size={28} name={focused ? 'home' : 'home-outline'} color={color} />
           ),
         }}
       />
@@ -40,7 +41,7 @@ export default function TabLayout() {
         options={{
           title: 'Child Development',
           tabBarIcon: ({ color, focused }) => (
-            <IconSymbol size={28} name={focused ? 'figure.child' : 'figure.child'} color={color} />
+            <Ionicons size={28} name={focused ? 'person' : 'person-outline'} color={color} />
           ),
         }}
       />
@@ -49,7 +50,7 @@ export default function TabLayout() {
         options={{
           title: 'About',
           tabBarIcon: ({ color, focused }) => (
-            <IconSymbol size={28} name={focused ? 'info.circle.fill' : 'info.circle'} color={color} />
+            <Ionicons size={28} name={focused ? 'information-circle' : 'information-circle-outline'} color={color} />
           ),
         }}
       />
