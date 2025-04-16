@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, ScrollView, useColorScheme } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons'; // Import icons
 
 export default function AboutScreen() {
     const colorScheme = useColorScheme();
@@ -13,20 +14,29 @@ export default function AboutScreen() {
             <ScrollView contentContainerStyle={styles.scrollContent}>
                 <Text style={styles.header}>About SF DEC</Text>
 
-                <Text style={styles.paragraph}>
-                    The San Francisco Department of Early Childhood (DEC) is dedicated to ensuring that all children in San Francisco have access to high-quality early care and education.
-                </Text>
-                <Text style={styles.paragraph}>
-                    Our mission is to support the healthy development and school readiness of young children through comprehensive services, community partnerships, and policy advocacy.
-                </Text>
+                {/* Intro Section Card */}
+                <View style={styles.card}>
+                    <Text style={styles.paragraph}>
+                        The San Francisco Department of Early Childhood (DEC) is dedicated to ensuring that all children in San Francisco have access to high-quality early care and education.
+                    </Text>
+                    <Text style={styles.paragraph}>
+                        Our mission is to support the healthy development and school readiness of young children through comprehensive services, community partnerships, and policy advocacy.
+                    </Text>
+                </View>
 
-                <Text style={styles.subHeader}>Our Work</Text>
-                <Text style={styles.paragraph}>
-                    We focus on initiatives like Early Learning For All, supporting Family Resource Centers, promoting Child Development resources, and ensuring fair Workforce Compensation for educators.
-                </Text>
-                 <Text style={styles.paragraph}>
-                    Through strategic planning and collaboration, we aim to create a robust early childhood system that benefits children, families, and the entire community.
-                </Text>
+                {/* Our Work Section Card */}
+                <View style={styles.card}>
+                    <View style={styles.subHeaderContainer}>
+                        <Ionicons name="briefcase-outline" size={24} color={styles.subHeader.color} style={styles.subHeaderIcon} />
+                        <Text style={styles.subHeader}>Our Work</Text>
+                    </View>
+                    <Text style={styles.paragraph}>
+                        We focus on initiatives like Early Learning For All, supporting Family Resource Centers, promoting Child Development resources, and ensuring fair Workforce Compensation for educators.
+                    </Text>
+                     <Text style={styles.paragraph}>
+                        Through strategic planning and collaboration, we aim to create a robust early childhood system that benefits children, families, and the entire community.
+                    </Text>
+                </View>
 
                 {/* Placeholder for other sections like Leadership, Plan, etc. */}
 
@@ -35,34 +45,62 @@ export default function AboutScreen() {
     );
 }
 
-// Re-use styles or define similar ones
-const getStyles = (colorScheme: 'light' | 'dark' | null | undefined) => StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: colorScheme === 'dark' ? '#000000' : '#FFFFFF',
-    },
-    scrollContent: {
-        paddingVertical: 20,
-        paddingHorizontal: 15,
-    },
-    header: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        marginBottom: 15,
-        textAlign: 'center',
-        color: colorScheme === 'dark' ? '#FFFFFF' : '#000000',
-    },
-    subHeader: {
-        fontSize: 22,
-        fontWeight: '600',
-        marginTop: 20,
-        marginBottom: 10,
-        color: colorScheme === 'dark' ? '#EFEFEF' : '#111111',
-    },
-    paragraph: {
-        fontSize: 16,
-        lineHeight: 24,
-        marginBottom: 15,
-        color: colorScheme === 'dark' ? '#CCCCCC' : '#333333',
-    },
-});
+// Re-use the enhanced styles
+const getStyles = (colorScheme: 'light' | 'dark' | null | undefined) => {
+    const isDark = colorScheme === 'dark';
+    const cardBackgroundColor = isDark ? '#1C1C1E' : '#F3F3F3';
+    const textColor = isDark ? '#CCCCCC' : '#333333';
+    const headerColor = isDark ? '#FFFFFF' : '#000000';
+    const subHeaderColor = isDark ? '#EFEFEF' : '#111111';
+
+    return StyleSheet.create({
+        container: {
+            flex: 1,
+            backgroundColor: isDark ? '#000000' : '#FFFFFF',
+        },
+        scrollContent: {
+            paddingVertical: 20,
+            paddingHorizontal: 15,
+        },
+        header: {
+            fontSize: 28,
+            fontWeight: 'bold',
+            marginBottom: 25,
+            textAlign: 'center',
+            color: headerColor,
+        },
+        card: {
+            backgroundColor: cardBackgroundColor,
+            borderRadius: 12,
+            padding: 15,
+            marginBottom: 20,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.1,
+            shadowRadius: 3,
+            elevation: 3,
+        },
+        subHeaderContainer: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: 10,
+        },
+        subHeaderIcon: {
+            marginRight: 8,
+        },
+        subHeader: {
+            fontSize: 22,
+            fontWeight: '600',
+            color: subHeaderColor,
+        },
+        paragraph: {
+            fontSize: 16,
+            lineHeight: 24,
+            // Remove bottom margin from last paragraph in card for better spacing
+            // marginBottom: 15, - Handled by card padding
+            color: textColor,
+        },
+        // Removed list styles as they aren't used here
+        // listItem, bulletIcon, listText, bold
+    });
+};
