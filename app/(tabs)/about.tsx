@@ -2,25 +2,27 @@ import React from 'react';
 import { StyleSheet, Text, View, ScrollView, useColorScheme } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons'; // Import icons
+import { useTranslation } from 'react-i18next'; // Import useTranslation
 
 export default function AboutScreen() {
     const colorScheme = useColorScheme();
     const styles = getStyles(colorScheme);
+    const { t } = useTranslation(); // Get translation function
 
     // Simple placeholder content based on the structure of sfdec.org/about/
     // Could be expanded with more specific sections like Leadership, Strategic Plan etc.
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollContent}>
-                <Text style={styles.header}>About SF DEC</Text>
+                <Text style={styles.header}>{t('tabs.about.header')}</Text>
 
                 {/* Intro Section Card */}
                 <View style={styles.card}>
                     <Text style={styles.paragraph}>
-                        The San Francisco Department of Early Childhood (DEC) is dedicated to ensuring that all children in San Francisco have access to high-quality early care and education.
+                        {t('tabs.about.card1.p1')}
                     </Text>
                     <Text style={styles.paragraph}>
-                        Our mission is to support the healthy development and school readiness of young children through comprehensive services, community partnerships, and policy advocacy.
+                        {t('tabs.about.card1.p2')}
                     </Text>
                 </View>
 
@@ -28,13 +30,13 @@ export default function AboutScreen() {
                 <View style={styles.card}>
                     <View style={styles.subHeaderContainer}>
                         <Ionicons name="briefcase-outline" size={24} color={styles.subHeader.color} style={styles.subHeaderIcon} />
-                        <Text style={styles.subHeader}>Our Work</Text>
+                        <Text style={styles.subHeader}>{t('tabs.about.card2.subHeader')}</Text>
                     </View>
                     <Text style={styles.paragraph}>
-                        We focus on initiatives like Early Learning For All, supporting Family Resource Centers, promoting Child Development resources, and ensuring fair Workforce Compensation for educators.
+                        {t('tabs.about.card2.p1')}
                     </Text>
                      <Text style={styles.paragraph}>
-                        Through strategic planning and collaboration, we aim to create a robust early childhood system that benefits children, families, and the entire community.
+                        {t('tabs.about.card2.p2')}
                     </Text>
                 </View>
 

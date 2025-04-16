@@ -1,0 +1,86 @@
+---
+description: internationalization translation language
+globs: 
+alwaysApply: false
+---
+## App Internationalization Strategy (UI Text & LLM API)
+
+The application employs a comprehensive i18n strategy that handles both the static text displayed in the user interface and the language settings used for interacting with the multimodal Large Language Model (LLM) via the Live API. This relies on `react-i18next` for UI text and careful configuration management for API interactions, linked by a central language configuration file.
+
+### 1. UI Text Internationalization (`react-i18next`)
+
+This part handles translating the text visible in the React Native components (buttons, labels, titles, alerts, etc.).
+
+*   **Core Library:** `react-i18next` along with `i18next`.
+*   **Configuration (`lib/i18n.ts`):**
+    *   Initializes and configures the `i18next` instance.
+    *   Loads translation resources from `locales/`. Each file (e.g., `en.json`, `zh-CN.json`) corresponds to a supported language, identified by its **`appCode`** (e.g., `en`, `zh-CN`) from `languageConfig.ts`.
+    *   Implements a **custom language detector**:
+        1.  Checks `AsyncStorage` for a saved language preference (`@selectedLanguage`, storing the **`appCode`**).
+        2.  If not found, uses `expo-localization` to detect the device's locale.
+        3.  Maps the detected locale to a supported **`appCode`** using logic similar to the onboarding screen (including handling Chinese variants).
+        4.  Defaults to `en` if detection fails or the language isn't supported.
+    *   Integrates with React using `initReactI18next`.
+    *   Sets `en` as the `fallbackLng`.
+*   **Translation Files (`locales/*.json`):**
+    *   Each file represents a language, named by its **`appCode`** (e.g., `en.json`).
+    *   Contains a JSON object with a root `"translation"` key.
+    *   Inside `"translation"`, key-value pairs define translations (e.g., `"onboarding.title": "Choose Your Language"`). Keys can be nested.
+*   **Usage in Components (e.g., `app/onboarding/*.tsx`):**
+    *   Components use the `useTranslation` hook from `react-i18next`.
+    *   `const { t, i18n } = useTranslation();` retrieves the translation function (`t`) and the `i18n` instance.
+    *   Text is rendered using `t('some.translation.key')`.
+    *   Language changes are triggered using `i18n.changeLanguage('appCode')`.
+
+### 2. Language Configuration (`config/languageConfig.ts`)
+
+This file acts as the central source of truth for language mappings, bridging the gap between UI language codes and API language codes/names.
+
+*   **Structure:** Exports the `supportedLanguagesConfig` array, containing `LanguageDetail` objects for each supported language.
+*   **`LanguageDetail` Interface:** Defines the structure for each language entry:
+    *   `appCode`: The code used internally by `i18next` and for storing preferences (e.g., `'en'`, `'zh-CN'`). Corresponds to the locale filename.
+    *   `displayName`: The human-readable name shown in the UI language selector (e.g., `'English'`, `'中文 (简体)'`).
+    *   `apiCode`: The BCP-47 code required by the `MultimodalLiveClient` API for speech and potentially other settings (e.g., `'en-US'`, `'cmn-CN'`, `'vi-VN'`). Note that multiple `appCode`s might map to the same `apiCode` (e.g., `zh-CN` and `zh-TW` both map to `cmn-CN`), and some might map to a different language's API code (e.g., `fil` maps to `en-US`).
+    *   `promptName`: The language name used for variable substitution within the system prompt/instruction sent to the LLM (e.g., `'English'`, `'Spanish'`, `'中文'`).
+*   **Helper Functions:** Provides utility functions to look up specific codes/names:
+    *   `getApiCodeByAppCode(appCode)`: Finds the `apiCode` based on the `appCode`.
+    *   `getPromptNameByApiCode(apiCode)`: Finds the `promptName` based on the `apiCode`.
+    *   `getLanguageConfigByAppCode(appCode)`: Retrieves the entire `LanguageDetail` object.
+    *   `getDisplayNameByAppCode(appCode)`: Retrieves the `displayName`.
+
+### 3. LLM API Internationalization (`hooks/use-live-api.ts`)
+
+This part ensures the LLM interaction uses the correct language settings.
+
+*   **Core Hook:** `hooks/use-live-api.ts` manages the `MultimodalLiveClient` and its `LiveConfig`.
+*   **Language State:** Maintains `languageCode` state, storing the current **`apiCode`** (e.g., `'en-US'`).
+*   **System Instruction:**
+    *   Uses `getPromptNameByApiCode(apiCode)` (from `languageConfig.ts`) to get the correct language name (e.g., 'Spanish').
+    *   Uses the `createSystemInstruction` helper function to inject this `promptName` into a base template (from `config/system-instructions.json`), creating the language-specific `systemInstruction` for the `LiveConfig`.
+*   **Speech Configuration:**
+    *   Sets `LiveConfig.generationConfig.speechConfig.language_code` to the current **`apiCode`** from the hook's state.
+*   **Updating Language (`updateLanguageAndReconnect` function):**
+    *   Accepts the **new `apiCode`** as an argument.
+    *   Looks up the corresponding `promptName` using `getPromptNameByApiCode`.
+    *   Constructs a **new `LiveConfig` object**, updating both the `systemInstruction` (using the looked-up `promptName`) and the `generationConfig.speechConfig.language_code` (using the new `apiCode`).
+    *   Updates the hook's internal `languageCode` and `config` states.
+    *   Disconnects and reconnects the `MultimodalLiveClient` with the new, language-specific `LiveConfig`.
+
+### 4. Overall Flow (Example: Language Selection in Onboarding)
+
+1.  **App Start:** `i18n.ts` detects language, sets UI language to an **`appCode`** (e.g., `zh-CN`). `useLiveAPI` initializes with a default or detected **`apiCode`** (e.g., `cmn-CN`).
+2.  **Onboarding (`app/onboarding/index.tsx`):**
+    *   Displays languages using `displayName` from `languageConfig.ts`.
+    *   User selects 'Español'. `handleSelectLanguage('es')` calls `i18n.changeLanguage('es')`. UI updates to Spanish.
+3.  **Continue Action (`handleContinue`):**
+    *   Saves selected **`appCode`** (`'es'`) to `AsyncStorage`.
+    *   Calls `getApiCodeByAppCode('es')` -> gets **`apiCode`** `'es-US'`.
+    *   Calls `updateLanguageAndReconnect('es-US')`.
+4.  **API Update (`updateLanguageAndReconnect`):**
+    *   Receives `'es-US'`.
+    *   Calls `getPromptNameByApiCode('es-US')` -> gets `promptName` 'Spanish'.
+    *   Creates new `LiveConfig` with Spanish system instruction and `speechConfig.language_code: 'es-US'`.
+    *   Updates state and reconnects the client with the Spanish config.
+5.  **Post-Onboarding:** UI text uses Spanish (`es` `appCode`). LLM interactions use Spanish prompts and expect Spanish speech output (`es-US` `apiCode`).
+
+This interconnected system, centered around `languageConfig.ts`, ensures a consistent language experience across both the user interface and the backend AI interactions. 

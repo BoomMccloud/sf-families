@@ -1,11 +1,15 @@
 {
   "translation": {
-    "welcome": "Welcome!",
-    "greeting": "Hello, {{name}}",
+    "welcome": "Welcome to the App",
+    "greeting": "Hello!",
     "onboarding": {
         "title": "Choose Your Language",
         "subtitle": "Select your preferred language below.",
-        "continue": "Continue"
+        "continue": "Continue",
+        "start": "Start using the App",
+        "languageSelected": "Language Selected",
+        "accessibilityLabel": "Select Language: {{language}}",
+        "selectLanguagePrompt": "Please select your preferred language to continue."
     },
     "childrenScreen": {
         "title": "How many children do you have?",
@@ -20,10 +24,181 @@
     },
     "tabs": {
          "home": "Home",
-         "settings": "Settings"
+         "settings": "Settings",
+         "layout": {
+           "indexTitle": "Early Learning",
+           "exploreTitle": "Child Development",
+           "aboutTitle": "About"
+         },
+         "index": {
+           "header": "Early Learning For All",
+           "card1": {
+             "p1": "Ninety percent of your child's brain develops during the first five years. High-quality child care and preschool help children's brains develop, support physical and emotional growth, and prepare them for kindergarten.",
+             "p2": "The Department of Early Childhood (DEC) helps ensure every child in San Francisco has access to early care and education. Two-thirds of families in SF are eligible for free child care, and many more can receive tuition discounts through the Early Learning For All initiative."
+           },
+           "card2": {
+             "subHeader": "Find Out if You Qualify",
+             "p1": "Early Learning For All offers financial support based on family size and income:",
+             "listItem1": {
+               "bold": "Fully-Funded Tuition:",
+               "text": "Free enrollment for families earning up to 110% of the Area Median Income (up to $164,850/year for a family of four)."
+             },
+             "listItem2": {
+               "bold": "Tuition Credit:",
+               "text": "50% off published tuition rates for families earning between 111%-150% of the AMI (up to $224,800/year for a family of four)."
+             },
+             "p2": "You can check eligibility and start your application online. The process involves verifying income, address, and preferences for hours, location, and language."
+           },
+           "card3": {
+             "subHeader": "Other Ways to Apply",
+             "listItem1": {
+               "bold": "Resource and Referral Agencies:",
+               "text": "Contact Children's Council, Wu Yee Children's Services, or Compass Family Services (for families experiencing homelessness) for help."
+             },
+             "listItem2": {
+               "bold": "Directly through Programs:",
+               "text": "Apply through an Early Learning For All network program."
+             }
+           },
+           "card4": {
+             "subHeader": "About the Programs",
+             "p1": "Over 500 programs are part of the network, meeting high-quality standards for curriculum, teachers, safety, and family partnerships."
+           }
+         },
+         "explore": {
+           "header": "Child Development",
+           "card1": {
+             "p1": "All children deserve to reach their full potential, and early intervention makes that possible. The Department of Early Childhood offers free developmental screenings and early intervention services."
+           },
+           "card2": {
+             "subHeader": "What is a developmental screening?",
+             "p1": "A screening looks at how a child moves, plays, and talks at different ages to see if their development is on track. Finding delays early is crucial, and getting extra help can make a big difference."
+           },
+           "card3": {
+             "subHeader": "How to Get a Screening",
+             "listItem1": {
+               "bold": "Pediatrician's Office:",
+               "text": "Doctors screen children from birth to age 3."
+             },
+             "listItem2": {
+               "bold": "Child Care Programs:",
+               "text": "Programs in the Early Learning For All network screen children ages 3-5."
+             },
+             "listItem3": {
+               "bold": "Family Resource Centers:",
+               "text": "26 centers offer free screenings."
+             },
+             "listItem4": {
+               "bold": "Through DEC:",
+               "text": "Contact Support for Families via DEC for free screenings."
+             }
+           },
+           "card4": {
+             "subHeader": "What if Concerns Arise?",
+             "p1": "If a screening indicates concerns, evaluations and services are available. You can be connected through your doctor or care provider, or reach out directly (no referral needed).",
+             "listItem1": {
+               "bold": "Under Age 3:",
+               "text": "Contact Golden Gate Regional Center."
+             },
+             "listItem2": {
+               "bold": "Age 3+:",
+               "text": "Contact SF Unified School District or Golden Gate Regional Center."
+             },
+             "p2": "Support for Families can assist with the evaluation and eligibility process."
+           },
+           "card5": {
+             "subHeader": "Developmental Milestones (Examples)",
+             "listItem1": {
+               "bold": "3 Months:",
+               "text": "Lifts head, reaches for toys, coos."
+             },
+             "listItem2": {
+               "bold": "6 Months:",
+               "text": "Sits without support, babbles."
+             },
+             "listItem3": {
+               "bold": "18 Months:",
+               "text": "Says single words, walks alone."
+             },
+             "listItem4": {
+               "bold": "2 Years:",
+               "text": "Says short sentences, kicks a ball."
+             },
+             "listItem5": {
+               "bold": "3 Years:",
+               "text": "Climbs well, plays make-believe."
+             },
+             "p1": "Visit cdc.gov/ActEarly for full checklists."
+           },
+           "card6": {
+             "subHeader": "Get Sparkler",
+             "p1": "Sparkler is a free mobile app (iOS/Android) for SF families with children 0-5. Use code SF to check development, find activities, and connect with educators. Available in English, Spanish, and Chinese."
+           }
+         },
+         "about": {
+           "header": "About SF DEC",
+           "card1": {
+             "p1": "The San Francisco Department of Early Childhood (DEC) is dedicated to ensuring that all children in San Francisco have access to high-quality early care and education.",
+             "p2": "Our mission is to support the healthy development and school readiness of young children through comprehensive services, community partnerships, and policy advocacy."
+           },
+           "card2": {
+             "subHeader": "Our Work",
+             "p1": "We focus on initiatives like Early Learning For All, supporting Family Resource Centers, promoting Child Development resources, and ensuring fair Workforce Compensation for educators.",
+             "p2": "Through strategic planning and collaboration, we aim to create a robust early childhood system that benefits children, families, and the entire community."
+           }
+         }
     },
      "common": {
          "error": "Error"
-     }
+     },
+    "settings": {
+      "title": "Settings",
+      "language": "Language",
+      "selectLanguage": "Select Language",
+      "changeLanguageInstruction": "Select your preferred language for the app interface and AI interaction.",
+      "currentLanguage": "Current Language: {{language}}",
+      "systemPrompt": "System Prompt",
+      "currentSystemPrompt": "Current System Prompt:",
+      "editSystemPrompt": "Edit System Prompt",
+      "saveSystemPrompt": "Save Prompt",
+      "resetSystemPrompt": "Reset to Default",
+      "promptUpdateSuccess": "System prompt updated successfully.",
+      "promptResetSuccess": "System prompt reset to default.",
+      "promptUpdateError": "Error updating system prompt.",
+      "promptResetError": "Error resetting system prompt.",
+      "close": "Close",
+      "apiKey": "API Key",
+      "enterApiKey": "Enter API Key",
+      "saveApiKey": "Save Key",
+      "apiKeySaved": "API Key saved successfully.",
+      "apiKeySaveError": "Error saving API Key.",
+      "model": "Model",
+      "temperature": "Temperature",
+      "topP": "Top P",
+      "topK": "Top K",
+      "maxOutputTokens": "Max Output Tokens",
+      "developerOptions": "Developer Options",
+      "generationConfig": "Generation Config"
+    },
+    "chat": {
+      "inputPlaceholder": "Type your message or talk...",
+      "connecting": "Connecting...",
+      "connected": "Connected",
+      "disconnected": "Disconnected. Tap mic to reconnect.",
+      "reconnecting": "Reconnecting...",
+      "speak": "Speak",
+      "stop": "Stop",
+      "clearChat": "Clear Chat",
+      "clearConfirmationTitle": "Confirm Clear",
+      "clearConfirmationMessage": "Are you sure you want to clear the chat history?",
+      "cancel": "Cancel",
+      "clear": "Clear",
+      "usePrompt": "Use this prompt"
+    },
+    "tools": {
+      "calling": "Calling Tool...",
+      "response": "Tool Response",
+      "error": "Tool Error"
+    }
   }
 }

@@ -20,7 +20,129 @@
     },
     "tabs": {
         "home": "首页",
-        "settings": "设置"
+        "settings": "设置",
+         "layout": {
+           "indexTitle": "[TRANSLATE] Early Learning",
+           "exploreTitle": "[TRANSLATE] Child Development",
+           "aboutTitle": "[TRANSLATE] About"
+         },
+         "index": {
+           "header": "[TRANSLATE] Early Learning For All",
+           "card1": {
+             "p1": "[TRANSLATE] Ninety percent of your child's brain develops during the first five years. High-quality child care and preschool help children's brains develop, support physical and emotional growth, and prepare them for kindergarten.",
+             "p2": "[TRANSLATE] The Department of Early Childhood (DEC) helps ensure every child in San Francisco has access to early care and education. Two-thirds of families in SF are eligible for free child care, and many more can receive tuition discounts through the Early Learning For All initiative."
+           },
+           "card2": {
+             "subHeader": "[TRANSLATE] Find Out if You Qualify",
+             "p1": "[TRANSLATE] Early Learning For All offers financial support based on family size and income:",
+             "listItem1": {
+               "bold": "[TRANSLATE] Fully-Funded Tuition:",
+               "text": "[TRANSLATE] Free enrollment for families earning up to 110% of the Area Median Income (up to $164,850/year for a family of four)."
+             },
+             "listItem2": {
+               "bold": "[TRANSLATE] Tuition Credit:",
+               "text": "[TRANSLATE] 50% off published tuition rates for families earning between 111%-150% of the AMI (up to $224,800/year for a family of four)."
+             },
+             "p2": "[TRANSLATE] You can check eligibility and start your application online. The process involves verifying income, address, and preferences for hours, location, and language."
+           },
+           "card3": {
+             "subHeader": "[TRANSLATE] Other Ways to Apply",
+             "listItem1": {
+               "bold": "[TRANSLATE] Resource and Referral Agencies:",
+               "text": "[TRANSLATE] Contact Children's Council, Wu Yee Children's Services, or Compass Family Services (for families experiencing homelessness) for help."
+             },
+             "listItem2": {
+               "bold": "[TRANSLATE] Directly through Programs:",
+               "text": "[TRANSLATE] Apply through an Early Learning For All network program."
+             }
+           },
+           "card4": {
+             "subHeader": "[TRANSLATE] About the Programs",
+             "p1": "[TRANSLATE] Over 500 programs are part of the network, meeting high-quality standards for curriculum, teachers, safety, and family partnerships."
+           }
+         },
+         "explore": {
+           "header": "[TRANSLATE] Child Development",
+           "card1": {
+             "p1": "[TRANSLATE] All children deserve to reach their full potential, and early intervention makes that possible. The Department of Early Childhood offers free developmental screenings and early intervention services."
+           },
+           "card2": {
+             "subHeader": "[TRANSLATE] What is a developmental screening?",
+             "p1": "[TRANSLATE] A screening looks at how a child moves, plays, and talks at different ages to see if their development is on track. Finding delays early is crucial, and getting extra help can make a big difference."
+           },
+           "card3": {
+             "subHeader": "[TRANSLATE] How to Get a Screening",
+             "listItem1": {
+               "bold": "[TRANSLATE] Pediatrician's Office:",
+               "text": "[TRANSLATE] Doctors screen children from birth to age 3."
+             },
+             "listItem2": {
+               "bold": "[TRANSLATE] Child Care Programs:",
+               "text": "[TRANSLATE] Programs in the Early Learning For All network screen children ages 3-5."
+             },
+             "listItem3": {
+               "bold": "[TRANSLATE] Family Resource Centers:",
+               "text": "[TRANSLATE] 26 centers offer free screenings."
+             },
+             "listItem4": {
+               "bold": "[TRANSLATE] Through DEC:",
+               "text": "[TRANSLATE] Contact Support for Families via DEC for free screenings."
+             }
+           },
+           "card4": {
+             "subHeader": "[TRANSLATE] What if Concerns Arise?",
+             "p1": "[TRANSLATE] If a screening indicates concerns, evaluations and services are available. You can be connected through your doctor or care provider, or reach out directly (no referral needed).",
+             "listItem1": {
+               "bold": "[TRANSLATE] Under Age 3:",
+               "text": "[TRANSLATE] Contact Golden Gate Regional Center."
+             },
+             "listItem2": {
+               "bold": "[TRANSLATE] Age 3+:",
+               "text": "[TRANSLATE] Contact SF Unified School District or Golden Gate Regional Center."
+             },
+             "p2": "[TRANSLATE] Support for Families can assist with the evaluation and eligibility process."
+           },
+           "card5": {
+             "subHeader": "[TRANSLATE] Developmental Milestones (Examples)",
+             "listItem1": {
+               "bold": "[TRANSLATE] 3 Months:",
+               "text": "[TRANSLATE] Lifts head, reaches for toys, coos."
+             },
+             "listItem2": {
+               "bold": "[TRANSLATE] 6 Months:",
+               "text": "[TRANSLATE] Sits without support, babbles."
+             },
+             "listItem3": {
+               "bold": "[TRANSLATE] 18 Months:",
+               "text": "[TRANSLATE] Says single words, walks alone."
+             },
+             "listItem4": {
+               "bold": "[TRANSLATE] 2 Years:",
+               "text": "[TRANSLATE] Says short sentences, kicks a ball."
+             },
+             "listItem5": {
+               "bold": "[TRANSLATE] 3 Years:",
+               "text": "[TRANSLATE] Climbs well, plays make-believe."
+             },
+             "p1": "[TRANSLATE] Visit cdc.gov/ActEarly for full checklists."
+           },
+           "card6": {
+             "subHeader": "[TRANSLATE] Get Sparkler",
+             "p1": "[TRANSLATE] Sparkler is a free mobile app (iOS/Android) for SF families with children 0-5. Use code SF to check development, find activities, and connect with educators. Available in English, Spanish, and Chinese."
+           }
+         },
+         "about": {
+           "header": "[TRANSLATE] About SF DEC",
+           "card1": {
+             "p1": "[TRANSLATE] The San Francisco Department of Early Childhood (DEC) is dedicated to ensuring that all children in San Francisco have access to high-quality early care and education.",
+             "p2": "[TRANSLATE] Our mission is to support the healthy development and school readiness of young children through comprehensive services, community partnerships, and policy advocacy."
+           },
+           "card2": {
+             "subHeader": "[TRANSLATE] Our Work",
+             "p1": "[TRANSLATE] We focus on initiatives like Early Learning For All, supporting Family Resource Centers, promoting Child Development resources, and ensuring fair Workforce Compensation for educators.",
+             "p2": "[TRANSLATE] Through strategic planning and collaboration, we aim to create a robust early childhood system that benefits children, families, and the entire community."
+           }
+         }
     },
     "common": {
         "error": "错误"

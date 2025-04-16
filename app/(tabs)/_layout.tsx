@@ -1,6 +1,7 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { HapticTab } from '@/components/HapticTab';
 import { Ionicons } from '@expo/vector-icons';
@@ -10,6 +11,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const { t } = useTranslation();
 
   return (
     <Tabs
@@ -30,7 +32,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Early Learning',
+          title: t('tabs.layout.indexTitle'),
           tabBarIcon: ({ color, focused }) => (
             <Ionicons size={28} name={focused ? 'home' : 'home-outline'} color={color} />
           ),
@@ -39,7 +41,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="explore"
         options={{
-          title: 'Child Development',
+          title: t('tabs.layout.exploreTitle'),
           tabBarIcon: ({ color, focused }) => (
             <Ionicons size={28} name={focused ? 'person' : 'person-outline'} color={color} />
           ),
@@ -48,7 +50,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="about"
         options={{
-          title: 'About',
+          title: t('tabs.layout.aboutTitle'),
           tabBarIcon: ({ color, focused }) => (
             <Ionicons size={28} name={focused ? 'information-circle' : 'information-circle-outline'} color={color} />
           ),

@@ -20,7 +20,129 @@
     },
      "tabs": {
          "home": "Inicio",
-         "settings": "Ajustes"
+         "settings": "Ajustes",
+         "layout": {
+           "indexTitle": "Aprendizaje Temprano",
+           "exploreTitle": "Desarrollo Infantil",
+           "aboutTitle": "Acerca de"
+         },
+         "index": {
+           "header": "Aprendizaje Temprano para Todos",
+           "card1": {
+             "p1": "El noventa por ciento del cerebro de su hijo se desarrolla durante los primeros cinco años. El cuidado infantil y preescolar de alta calidad ayudan al desarrollo cerebral de los niños, apoyan el crecimiento físico y emocional y los preparan para el jardín de infantes.",
+             "p2": "El Departamento de Primera Infancia (DEC) ayuda a garantizar que todos los niños de San Francisco tengan acceso a cuidado y educación temprana. Dos tercios de las familias en SF son elegibles para cuidado infantil gratuito, y muchas más pueden recibir descuentos en la matrícula a través de la iniciativa Aprendizaje Temprano para Todos."
+           },
+           "card2": {
+             "subHeader": "Averigüe si Califica",
+             "p1": "Aprendizaje Temprano para Todos ofrece apoyo financiero basado en el tamaño de la familia y los ingresos:",
+             "listItem1": {
+               "bold": "Matrícula Totalmente Financiada:",
+               "text": "Inscripción gratuita para familias que ganan hasta el 110% del Ingreso Medio del Área (hasta $164,850/año para una familia de cuatro)."
+             },
+             "listItem2": {
+               "bold": "Crédito de Matrícula:",
+               "text": "50% de descuento en las tarifas de matrícula publicadas para familias que ganan entre el 111% y el 150% del AMI (hasta $224,800/año para una familia de cuatro)."
+             },
+             "p2": "Puede verificar la elegibilidad e iniciar su solicitud en línea. El proceso implica verificar ingresos, dirección y preferencias de horario, ubicación e idioma."
+           },
+           "card3": {
+             "subHeader": "Otras Formas de Aplicar",
+             "listItem1": {
+               "bold": "Agencias de Recursos y Referencias:",
+               "text": "Contacte al Consejo de Niños (Children's Council), Servicios para Niños Wu Yee (Wu Yee Children's Services) o Servicios Familiares Compass (Compass Family Services) (para familias sin hogar) para obtener ayuda."
+             },
+             "listItem2": {
+               "bold": "Directamente a través de Programas:",
+               "text": "Aplique a través de un programa de la red Aprendizaje Temprano para Todos."
+             }
+           },
+           "card4": {
+             "subHeader": "Acerca de los Programas",
+             "p1": "Más de 500 programas forman parte de la red, cumpliendo con altos estándares de calidad en currículo, maestros, seguridad y asociaciones familiares."
+           }
+         },
+         "explore": {
+           "header": "Desarrollo Infantil",
+           "card1": {
+             "p1": "Todos los niños merecen alcanzar su máximo potencial, y la intervención temprana lo hace posible. El Departamento de Primera Infancia ofrece exámenes de desarrollo gratuitos y servicios de intervención temprana."
+           },
+           "card2": {
+             "subHeader": "¿Qué es un examen de desarrollo?",
+             "p1": "Un examen observa cómo un niño se mueve, juega y habla a diferentes edades para ver si su desarrollo va por buen camino. Detectar retrasos temprano es crucial, y obtener ayuda adicional puede marcar una gran diferencia."
+           },
+           "card3": {
+             "subHeader": "Cómo Obtener un Examen",
+             "listItem1": {
+               "bold": "Consultorio del Pediatra:",
+               "text": "Los médicos examinan a los niños desde el nacimiento hasta los 3 años."
+             },
+             "listItem2": {
+               "bold": "Programas de Cuidado Infantil:",
+               "text": "Los programas de la red Aprendizaje Temprano para Todos examinan a niños de 3 a 5 años."
+             },
+             "listItem3": {
+               "bold": "Centros de Recursos Familiares:",
+               "text": "26 centros ofrecen exámenes gratuitos."
+             },
+             "listItem4": {
+               "bold": "A través del DEC:",
+               "text": "Contacte a Apoyo para Familias (Support for Families) a través del DEC para exámenes gratuitos."
+             }
+           },
+           "card4": {
+             "subHeader": "¿Qué Pasa si Surgen Preocupaciones?",
+             "p1": "Si un examen indica preocupaciones, hay evaluaciones y servicios disponibles. Puede ser conectado a través de su médico o proveedor de cuidado, o comunicarse directamente (no se necesita referencia).",
+             "listItem1": {
+               "bold": "Menores de 3 Años:",
+               "text": "Contacte al Centro Regional Golden Gate (Golden Gate Regional Center)."
+             },
+             "listItem2": {
+               "bold": "3 Años o Más:",
+               "text": "Contacte al Distrito Escolar Unificado de SF (SF Unified School District) o al Centro Regional Golden Gate."
+             },
+             "p2": "Apoyo para Familias puede ayudar con el proceso de evaluación y elegibilidad."
+           },
+           "card5": {
+             "subHeader": "Hitos del Desarrollo (Ejemplos)",
+             "listItem1": {
+               "bold": "3 Meses:",
+               "text": "Levanta la cabeza, alcanza juguetes, arrulla."
+             },
+             "listItem2": {
+               "bold": "6 Meses:",
+               "text": "Se sienta sin apoyo, balbucea."
+             },
+             "listItem3": {
+               "bold": "18 Meses:",
+               "text": "Dice palabras sueltas, camina solo."
+             },
+             "listItem4": {
+               "bold": "2 Años:",
+               "text": "Dice frases cortas, patea una pelota."
+             },
+             "listItem5": {
+               "bold": "3 Años:",
+               "text": "Trepa bien, juega a simular."
+             },
+             "p1": "Visite cdc.gov/ActEarly para ver las listas completas."
+           },
+           "card6": {
+             "subHeader": "Obtenga Sparkler",
+             "p1": "Sparkler es una aplicación móvil gratuita (iOS/Android) para familias de SF con niños de 0 a 5 años. Use el código SF para verificar el desarrollo, encontrar actividades y conectarse con educadores. Disponible en inglés, español y chino."
+           }
+         },
+         "about": {
+           "header": "Acerca de SF DEC",
+           "card1": {
+             "p1": "El Departamento de Primera Infancia de San Francisco (DEC) se dedica a garantizar que todos los niños de San Francisco tengan acceso a cuidado y educación temprana de alta calidad.",
+             "p2": "Nuestra misión es apoyar el desarrollo saludable y la preparación escolar de los niños pequeños a través de servicios integrales, asociaciones comunitarias y defensa de políticas."
+           },
+           "card2": {
+             "subHeader": "Nuestro Trabajo",
+             "p1": "Nos enfocamos en iniciativas como Aprendizaje Temprano para Todos, apoyando a los Centros de Recursos Familiares, promoviendo recursos de Desarrollo Infantil y asegurando una Compensación Laboral justa para los educadores.",
+             "p2": "A través de la planificación estratégica y la colaboración, nuestro objetivo es crear un sistema sólido de primera infancia que beneficie a los niños, las familias y toda la comunidad."
+           }
+         }
     },
     "common": {
         "error": "Error"
