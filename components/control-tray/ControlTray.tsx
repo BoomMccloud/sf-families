@@ -15,8 +15,9 @@
  */
 
 import React, { memo, ReactNode, RefObject, useEffect, useRef, useState } from "react";
-// Import React Native components
+// Import React Native components and Expo's vector icons
 import { StyleSheet, View, TouchableOpacity, Text, Platform } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons'; // Import from Expo's library
 
 import { useLiveAPIContext } from "../../contexts/LiveAPIContext";
 // Restoring imports
@@ -103,23 +104,24 @@ function ControlTray({
     !muted && styles.micButtonActive, // Style when mic is on (unmuted)
     !connected && styles.disabled // Style when disconnected
   ];
-  const textIndicatorStyle = [
-    styles.textIndicator,
-    !connected && styles.textIndicatorHidden
-  ];
+
+  // Icon properties
+  const iconSize = 20;
+  const iconColor = '#ffffff';
 
   return (
     // Restore original outer View structure
     <View style={styles.controlTray}>
       {/* Restore actionsNav View */}
       <View style={actionsNavStyle}>
-        {/* Restore Mic Button */}
+        {/* Restore Mic Button with Expo Icon */}
         <TouchableOpacity
           style={micButtonStyle}
           onPress={() => setMuted(!muted)}
           disabled={!connected} // Disable interaction when not connected
         >
-          <Text style={styles.iconText}>{!muted ? "MIC" : "MUT"}</Text>
+          {/* Use FontAwesome component */}
+          <FontAwesome name={!muted ? "microphone" : "microphone-slash"} size={iconSize} color={iconColor} />
         </TouchableOpacity>
 
         {/* Video buttons still commented out */}
@@ -129,17 +131,16 @@ function ControlTray({
       {/* Move Connection Button and Text next to actionsNav */}
       <View style={styles.connectionGroup}>
         <View style={styles.connectionButtonContainer}>
+          {/* Connect/Disconnect Button with Expo Icon */}
           <TouchableOpacity
             ref={connectButtonRef}
             style={connectToggleStyle}
             onPress={connected ? disconnect : connect}
           >
-            <Text style={styles.iconText}>
-              {connected ? "PAUSE" : "PLAY"}
-            </Text>
+            {/* Use FontAwesome component */}
+            <FontAwesome name={connected ? "pause" : "play"} size={iconSize} color={iconColor} />
           </TouchableOpacity>
         </View>
-        <Text style={textIndicatorStyle}>Streaming</Text>
       </View>
     </View>
   );
@@ -197,22 +198,10 @@ const styles = StyleSheet.create({
   micButtonActive: {
       backgroundColor: 'red',
   },
-  textIndicator: {
-    fontSize: 11,
-    color: 'blue',
-  },
-  textIndicatorHidden: {
-      opacity: 0,
-  },
   disabled: {
     opacity: 0.5,
     backgroundColor: '#f5f5f5',
     borderColor: '#d0d0d0'
-  },
-  iconText: {
-    color: '#ffffff',
-    fontWeight: 'bold',
-    fontSize: 10,
   },
 });
 

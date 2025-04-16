@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
   // e.g., controlTray: { position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 10 }
   controlTrayWrapper: {
     position: 'absolute', // Make it float
-    bottom: Platform.OS === 'ios' ? 30 : 20, // Position near bottom (adjust as needed, account for safe area)
+    bottom: Platform.OS === 'ios' ? 80 : 70, // Position near bottom + 50px
     left: 0,
     right: 0,
     zIndex: 10, // Ensure it floats above other content
